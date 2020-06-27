@@ -138,7 +138,13 @@ app.post("/login", function(req, res) {
     if(err) {
       console.log(err);
     }
-    passport.authenticate("local")(req, res, function() {
+    passport.authenticate("local")(req, res, function(err, user, info) {
+      if(err) {
+        next(err);
+      }
+      if(!user) {
+        res.redirect("/login");
+      }
       res.redirect("/secrets");
     });
   });

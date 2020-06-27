@@ -64,7 +64,7 @@ passport.deserializeUser(function(id, done) {
 passport.use(new GoogleStrategy({
     clientID: process.env.G_CLIENT_ID,
     clientSecret: process.env.G_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/secrets"
+    callbackURL: "https://secrets-confessions.herokuapp.com/auth/google/secrets"
   },
   function(accessToken, refreshToken, profile, cb) {
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
@@ -76,7 +76,7 @@ passport.use(new GoogleStrategy({
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENT_ID,
     clientSecret: process.env.FB_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/secrets"
+    callbackURL: "https://secrets-confessions.herokuapp.com/auth/facebook/secrets"
   },
   function(accessToken, refreshToken, profile, cb) {
     User.findOrCreate({ facebookId: profile.id }, function (err, user) {
@@ -88,7 +88,7 @@ passport.use(new FacebookStrategy({
 passport.use(new RedditStrategy({
     clientID: process.env.REDDIT_CONSUMER_KEY,
     clientSecret: process.env.REDDIT_CONSUMER_SECRET,
-    callbackURL: "http://127.0.0.1:3000/auth/reddit/secrets"
+    callbackURL: "https://secrets-confessions.herokuapp.com/auth/reddit/secrets"
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOrCreate({ redditId: profile.id }, function (err, user) {

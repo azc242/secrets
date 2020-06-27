@@ -11,10 +11,6 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const RedditStrategy = require('passport-reddit').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
-// const bcrypt  = require("bcrypt");
-// const saltRounds = 10;
-// const md5 = require('md5');
-// const encrypt = require("mongoose-encryption");
 
 const app = express();
 
@@ -51,10 +47,6 @@ const userSchema = new mongoose.Schema({
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
 
-// const secret = "thisIsMySecret";
-
-// userSchema.plugin(encrypt, {secret: process.env.SECRET, encryptedFields: ["password"] });
-
 const User = new mongoose.model("User", userSchema);
 
 passport.use(User.createStrategy());
@@ -75,9 +67,6 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3000/auth/google/secrets"
   },
   function(accessToken, refreshToken, profile, cb) {
-    //
-    // console.log(profile);
-
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
     });
@@ -90,8 +79,6 @@ passport.use(new FacebookStrategy({
     callbackURL: "http://localhost:3000/auth/facebook/secrets"
   },
   function(accessToken, refreshToken, profile, cb) {
-
-    console.log(profile);
     User.findOrCreate({ facebookId: profile.id }, function (err, user) {
       return cb(err, user);
     });
@@ -203,8 +190,13 @@ app.get("/secrets", function(req, res) {
         console.log(err);
       } else {
         if(foundUsers) {
-          console.log(foundUsers);
-          res.render("secrets", {usersWithSecrets: foundUsers});
+          let hasSecret = false;
+          if(req.user.secret) {
+            hasSecret = true;
+          } else {
+            hasSecret = false;
+          }
+          res.render("secrets", {usersWithSecrets: foundUsers, hasSecret: hasSecret});
         }
       }
     });
@@ -237,6 +229,15 @@ app.post("/submit", function(req, res) {
   });
 });
 
+app.get("/delete", function(req, res) {
+  if(req.isAuthenticated()){
+    req.user.secret = undefined;
+    req.user.save();
+    res.redirect("/secrets");
+  } else {
+    res.render("login");
+  }
+});
 
 app.listen(3000, function(){
   console.log("Server started on port 3000");

@@ -137,6 +137,7 @@ app.post("/login", function(req, res) {
   req.login(user, function(err){
     if(err) {
       console.log(err);
+      res.redirect("/login");
     }
     passport.authenticate("local")(req, res, function() {
       res.redirect("/secrets");
@@ -192,6 +193,7 @@ app.get("/secrets", function(req, res) {
     User.find({"secret": {$ne: null}}, function(err, foundUsers) {
       if(err) {
         console.log(err);
+        res.redirect("/login");
       } else {
         if(foundUsers) {
           let hasSecret = false;
@@ -223,6 +225,7 @@ app.post("/submit", function(req, res) {
   User.findById(req.user.id, function(err, foundUser) {
     if(err){
       console.log(err);
+      res.redirect("/login");
     } else {
       if(foundUser){
         foundUser.secret = submittedSecret;

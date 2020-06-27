@@ -36,7 +36,7 @@ mongoose.connect("mongodb+srv://alanAdmin:" + process.env.ATLAS_PASSWORD + "@clu
 mongoose.set('useCreateIndex', true);
 
 const userSchema = new mongoose.Schema({
-  email: {
+  username: {
     type: String,
     sparse: true,
     unique: false
@@ -131,7 +131,7 @@ app.post("/login", function(req, res) {
 
   const user = new User({
     username: req.body.username,
-    passport: req.body.password
+    password: req.body.password
   });
 
   req.login(user, function(err){

@@ -137,11 +137,11 @@ app.post("/login", function(req, res) {
   req.login(user, function(err){
     if(err) {
       console.log(err);
-      res.redirect("/login");
     }
     passport.authenticate("local")(req, res, function() {
       res.redirect("/secrets");
     });
+    res.redirect("/login");
   });
 });
 
@@ -225,12 +225,13 @@ app.post("/submit", function(req, res) {
   User.findById(req.user.id, function(err, foundUser) {
     if(err){
       console.log(err);
-      res.redirect("/login");
     } else {
       if(foundUser){
         foundUser.secret = submittedSecret;
         foundUser.save();
         res.redirect("/secrets");
+      } else {
+        res.redirect("/login");
       }
     }
   });

@@ -141,7 +141,6 @@ app.post("/login", function(req, res) {
     passport.authenticate("local")(req, res, function() {
       res.redirect("/secrets");
     });
-    res.redirect("/login");
   });
 });
 

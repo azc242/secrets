@@ -9,6 +9,7 @@ const passport = require("passport");
 const passportLocalMongoose = require('passport-local-mongoose');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const RedditStrategy = require('passport-reddit').Strategy;
 const findOrCreate = require('mongoose-findorcreate');
 // const bcrypt  = require("bcrypt");
 // const saltRounds = 10;
@@ -43,6 +44,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   googleId: String,
   facebookId: String,
+  redditId: String,
   secret: String
 });
 
@@ -92,6 +94,18 @@ passport.use(new FacebookStrategy({
     console.log(profile);
     User.findOrCreate({ facebookId: profile.id }, function (err, user) {
       return cb(err, user);
+    });
+  }
+));
+
+passport.use(new RedditStrategy({
+    clientID: process.env.REDDIT_CONSUMER_KEY,
+    clientSecret: process.env.REDDIT_CONSUMER_SECRET,
+    callbackURL: "http://127.0.0.1:3000/auth/reddit/secrets"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ redditId: profile.id }, function (err, user) {
+      return done(err, user);
     });
   }
 ));
@@ -155,6 +169,23 @@ app.get('/auth/facebook',
 
 app.get('/auth/facebook/secrets',
   passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/secrets');
+});
+
+// app.get('/auth/reddit',
+//   passport.authenticate('reddit'));
+app.get('/auth/reddit', function(req, res, next){
+  // req.session.state = crypto.randomBytes(32).toString('hex');
+  passport.authenticate('reddit', {
+    state: "false",
+    // duration: "permenant"
+  })(req, res, next);
+});
+
+app.get('/auth/reddit/secrets',
+  passport.authenticate('reddit', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/secrets');

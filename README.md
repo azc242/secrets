@@ -2,7 +2,7 @@
 Web app clone of (old school) [Whisper](http://whisper.sh/), where users sign up and anonymously post secrets or confessions.
 
 ## Motivation
-This project was first built to learn handling user accounts and passwords while I was going through an online course. Throughout the process, I used and worked with various methods of authentication and security such as basic encryption, MD5 hashing, bcrypt hashing and salting, as well as OAuth 2.0. I thought it would be fun and useful to integrate different APIs for OAuth 2.0 such as Google, Facebook, and Reddit API so that I know how to use them for future apps.
+This project was first built to learn handling user accounts and passwords while I was going through an online course. Throughout the process, I used and worked with various methods of authentication and security such as basic encryption, MD5 hashing, bcrypt hashing and salting, as well as OAuth 2.0. While doing so, I also learned about sessions and cookies which are useful for managing user login sessions. I thought it would be fun and useful to integrate different APIs for OAuth 2.0 such as Google, Facebook, and Reddit API so that I know how to use them for future apps.
 
 ## Tech/framework used
 <b>Built with</b>

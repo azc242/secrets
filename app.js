@@ -26,15 +26,18 @@ app.use(session({
   saveUninitialized: false
 }));
 
+// set up passport to handle login sessions/cookies
 app.use(passport.initialize());
 app.use(passport.session());
 
+// set up MongoDB Atlas cloud database
 mongoose.connect("mongodb+srv://alanAdmin:" + process.env.ATLAS_PASSWORD + "@cluster0-p9rby.mongodb.net/userDB?retryWrites=true&w=majority", {
   useUnifiedTopology: true,
   useNewUrlParser: true
 });
 mongoose.set('useCreateIndex', true);
 
+// Create schema for users
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -55,6 +58,8 @@ const User = new mongoose.model("User", userSchema);
 
 passport.use(User.createStrategy());
 
+
+// serialize and deseralize for "creating: and "crumbling" cookies
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -65,6 +70,7 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+// Set up Google OAuth 2.0
 passport.use(new GoogleStrategy({
     clientID: process.env.G_CLIENT_ID,
     clientSecret: process.env.G_CLIENT_SECRET,
@@ -77,6 +83,7 @@ passport.use(new GoogleStrategy({
   }
 ));
 
+// Set up Facebook OAuth 2.0
 passport.use(new FacebookStrategy({
     clientID: process.env.FB_CLIENT_ID,
     clientSecret: process.env.FB_CLIENT_SECRET,
@@ -89,6 +96,7 @@ passport.use(new FacebookStrategy({
   }
 ));
 
+// Setup Reddit OAtuh 2.0
 passport.use(new RedditStrategy({
     clientID: process.env.REDDIT_CONSUMER_KEY,
     clientSecret: process.env.REDDIT_CONSUMER_SECRET,
@@ -111,6 +119,7 @@ app.get("/register", function(req, res) {
 
 app.post("/register", function(req, res) {
 
+  // if successful registration, redirect to secrets display page
   User.register({username: req.body.username}, req.body.password, function(err, user) {
     if(err) {
       console.log(err);
@@ -139,6 +148,7 @@ app.post("/login", function(req, res) {
       console.log(err);
     }
     passport.authenticate("local", { failureRedirect: '/login' })(req, res, function() {
+      // successful login
       res.redirect("/secrets");
     });
   });
@@ -165,13 +175,9 @@ app.get('/auth/facebook/secrets',
     res.redirect('/secrets');
 });
 
-// app.get('/auth/reddit',
-//   passport.authenticate('reddit'));
 app.get('/auth/reddit', function(req, res, next){
-  // req.session.state = crypto.randomBytes(32).toString('hex');
   passport.authenticate('reddit', {
     state: "false",
-    // duration: "permenant"
   })(req, res, next);
 });
 
@@ -195,6 +201,7 @@ app.get("/secrets", function(req, res) {
         res.redirect("/login");
       } else {
         if(foundUsers) {
+          // user found, check if they already have a secret or not
           let hasSecret = false;
           if(req.user.secret) {
             hasSecret = true;
@@ -225,6 +232,7 @@ app.post("/submit", function(req, res) {
     if(err){
       console.log(err);
     } else {
+      // check if they are registered and logged in
       if(foundUser){
         foundUser.secret = submittedSecret;
         foundUser.save();
@@ -237,6 +245,7 @@ app.post("/submit", function(req, res) {
 });
 
 app.get("/delete", function(req, res) {
+  // preliminary check to see if they are logged in before allowing deletion
   if(req.isAuthenticated()){
     req.user.secret = undefined;
     req.user.save();

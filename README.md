@@ -14,4 +14,4 @@ This project was first built to learn handling user accounts and passwords while
 - [express-session](https://www.npmjs.com/package/express-session)
 
 ## Usage
-Simple go to the [web application](https://secrets-confessions.herokuapp.com/) and register if you do not yet have an account. You can do so using email and password or through Google, Facebook, or Reddit. Then, you may submit a secret. If you enter another secret, the original one will be replaced. You can also opt to delete your own secret by hitting the red "Delete My Secret" button.
+Simply go to the [web application](https://secrets-confessions.herokuapp.com/) and register if you do not yet have an account. You can do so using email and password or through Google, Facebook, or Reddit. Then, you may submit a secret. If you enter another secret, the original one will be replaced. You can also opt to delete your own secret by hitting the red "Delete My Secret" button.

@@ -20,11 +20,11 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(session({
-  secret: "",
-  resave: false,
-  saveUninitialized: false
-}));
+// app.use(session({
+//  secret: "",
+//  resave: false,
+//  saveUninitialized: false
+// }));
 
 // set up passport to handle login sessions/cookies
 app.use(passport.initialize());
